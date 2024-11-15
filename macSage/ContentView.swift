@@ -34,7 +34,7 @@ struct ContentView: View {
         // Prepare the payload
         let payload: [String: Any] = [
             "model": selectedModel,
-            "message": userPrompt 
+            "message": userPrompt
         ]
 
         do {
@@ -187,8 +187,9 @@ struct ContentView: View {
                    let models = json["response"] as? [String] { // Access "response" directly
                     DispatchQueue.main.async {
                         self.models = models
-                        self.selectedModel = models.first ?? "" // Set default selection
-                        self.errorMessage = nil // Clear any previous errors
+                        // Default to "gpt-40-mini" if available, otherwise select the first model
+                       self.selectedModel = models.contains("gpt-4o-mini") ? "gpt-4o-mini" : models.first ?? ""
+                       self.errorMessage = nil // Clear any previous errors
                     }
                 } else {
                     DispatchQueue.main.async {
