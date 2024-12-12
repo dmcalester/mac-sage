@@ -30,7 +30,8 @@ struct ContentView: View {
             errorMessage = "Please select a model."
             return
         }
-        
+   
+ 
         let url = URL(string: "https://api.asksage.ai/server/query")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -100,27 +101,37 @@ struct ContentView: View {
         VStack {
             // Display response text
             VStack(alignment: .leading) {
-                Text("Response:")
-                    .font(.subheadline)
-                    .padding(.bottom, 2)
-                
+
                 TextEditor(text: $responseText)
-                    .frame(height: 100)
+                    .frame(height: 100.0)
                     .border(Color.gray, width: 1)
                     .textSelection(.enabled)
-                    .padding() // Prevent editing
+                    .padding()
+            }
+            // Dropdown menu for models
+            if models.isEmpty {
+                Text("No models available.").padding()
+            } else {
+                Picker("", selection: $selectedModel) {
+                    ForEach(models, id: \.self) { model in
+                        Text(model).tag(model)
+                    }
+                }
+                .pickerStyle(MenuPickerStyle())
+                .padding(.horizontal, 10.0)
+                .padding(.vertical, 0)
             }
             
             // User prompt input field
             VStack(alignment: .leading) {
-                Text("Enter your prompt:")
-                    .font(.subheadline)
-                    .padding(.bottom, 2)
-                
+    
                 TextField("Type your prompt here...", text: $userPrompt)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
             }
+            .padding(0.0)
+            
+            
             
             if let errorMessage = errorMessage {
                 Text("Error: \(errorMessage)")
@@ -128,23 +139,14 @@ struct ContentView: View {
                     .padding()
             }
             
-            // Dropdown menu for models
-            if models.isEmpty {
-                Text("No models available.").padding()
-            } else {
-                Picker("Select a Model", selection: $selectedModel) {
-                    ForEach(models, id: \.self) { model in
-                        Text(model).tag(model)
-                    }
-                }
-                .pickerStyle(MenuPickerStyle())
-                .padding()
-            }
+          
             
             Button("Submit Prompt") {
                 submitPrompt()
             }
             .padding()
+            
+            
             
             Button("Settings") {
                 showSettings.toggle()
